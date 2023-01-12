@@ -41,7 +41,7 @@ const argv = yargs.options({
 		describe: 'The number of milliseconds to wait before calling a timeout',
 		number: true
 	},
-}).help().alias('help', 'h').argv;
+}).boolean("inverse").alias("inverse", "i").help().alias('help', 'h').argv;
 
 async function main(args) {
 	const browser = await puppeteer.launch({ headless: false, executablePath: executablePath() });
@@ -64,16 +64,22 @@ async function main(args) {
 			
 			const stepResult = await step.run(context);
 			//console.log("Ran step " + step.constructor.name + " and got " + JSON.stringify(stepResult));
+
+			let result = stepResult.result;
+			if (args.inverse && typeof result === "boolean") {
+				result = !result;
+			}
 			
-			if (stepResult.result === true) {
+			if (result === true) {
 				if (stepResult.reason) {
 					console.log(`yea! ${stepResult.reason}`);
 				} else {
 					console.log("yea!");
 				}
+				process.stderr.write("\007");
 				breakCalled = true;
 				break;
-			} else if (stepResult.result === false) {
+			} else if (result === false) {
 				if (stepResult.reason) {
 					console.log(`nope! ${stepResult.reason}`);
 				} else {
