@@ -1,5 +1,31 @@
 const { compileExpression } = require("filtrex");
 var userAgent = require('user-agents');
+const { parse } = require('node-html-parser');
+
+let page;
+function query(s) {
+    return page.querySelectorAll(s);
+}
+
+function str(s) {
+    return s.toString();
+}
+
+function innerText(s) {
+    return s.innerText;
+}
+
+function number(s) {
+    return Number(s);
+}
+
+function replace(s, a, b) {
+    return s.replaceAll(a, b);
+}
+
+function nth(a, b) {
+    return a[b];
+}
 
 function strlen(s) {
     return s.length;
@@ -22,6 +48,12 @@ class ExpressionExecutorStep {
                 strlen,
                 contains,
                 print,
+                query,
+                str,
+                nth,
+                number,
+                innerText,
+                replace,
             }
         });
     }
@@ -55,15 +87,15 @@ class PageGetterStep {
         if (context.page.isClosed()) {
             throw new Error("Page was closed.");
         }
-		try {
-			context.response = await context.page.goto(context.url, { timeout: context.timeout });
-		} catch (error) {
+        try {
+            context.response = await context.page.goto(context.url, { timeout: context.timeout });
+        } catch (error) {
             return {
                 result: false,
                 reason: error.message,
             }
-		}
-		await new Promise((resolve => setTimeout(resolve, context.wait_before_page_load)));
+        }
+        await new Promise((resolve => setTimeout(resolve, context.wait_page_contents)));
         return {
             // this means to skip to next step.
             result: null,
@@ -81,16 +113,19 @@ class PageContentGetterStep {
         if (context.page.isClosed()) {
             throw new Error("Page was closed.");
         }
-		try {
+        try {
+            page = parse(await context.page.evaluate(() => {
+                return document.documentElement.innerHTML;
+            }));
             context.content = await context.page.evaluate(() => {
                 return document.querySelector("body").textContent;
             });
-		} catch (error) {
+        } catch (error) {
             return {
                 result: false,
                 reason: error.message,
             }
-		}
+        }
         return {
             // this means to skip to next step.
             result: null,

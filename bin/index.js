@@ -20,11 +20,11 @@ const argv = yargs.options({
 		describe: 'The condition, as an expression, that must be met',
 		string: true
 	},
-	wait_before_page_load: {
+	wait_page_contents: {
 		demand: false,
 		alias: 'w',
 		default: 0,
-		describe: 'The number of milliseconds to wait before page load',
+		describe: 'The number of milliseconds to wait before trying to get page contents',
 		number: true
 	},
 	loop_delay: {
@@ -41,10 +41,17 @@ const argv = yargs.options({
 		describe: 'The number of milliseconds to wait before calling a timeout',
 		number: true
 	},
-}).boolean("inverse").alias("inverse", "i").help().alias('help', 'h').argv;
+	headless: {
+		demand: false,
+		alias: 'h',
+		default: true,
+		describe: 'Start the ping browser in headless',
+		boolean: true
+	},
+}).boolean("inverse").alias("inverse", "i").help().argv;
 
 async function main(args) {
-	const browser = await puppeteer.launch({ headless: false, executablePath: executablePath() });
+	const browser = await puppeteer.launch({ headless: args.headless, executablePath: executablePath() });
 	const page = await browser.newPage();
 	let stopPing = false;
 	let context = {
@@ -61,7 +68,7 @@ async function main(args) {
 		let breakCalled = false;
 		for (let index = 0; index < steps.length; index++) {
 			const step = steps[index];
-			
+
 			const stepResult = await step.run(context);
 			//console.log("Ran step " + step.constructor.name + " and got " + JSON.stringify(stepResult));
 
@@ -69,7 +76,7 @@ async function main(args) {
 			if (args.inverse && typeof result === "boolean") {
 				result = !result;
 			}
-			
+
 			if (result === true) {
 				if (stepResult.reason) {
 					console.log(`yea! ${stepResult.reason}`);
