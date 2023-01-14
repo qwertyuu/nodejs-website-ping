@@ -13,7 +13,7 @@
   },
   "name": "pingweb",
   "description": "Tool to run a browser and retry a page until a condition is met.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "bin/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
