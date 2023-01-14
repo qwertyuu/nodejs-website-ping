@@ -106,6 +106,7 @@ class PageGetterStep {
 
     async pingDone(context) {
         context.responses = [];
+        page = null;
     }
 }
 

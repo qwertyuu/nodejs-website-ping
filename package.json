@@ -12,8 +12,8 @@
     "pingweb": "bin/index.js"
   },
   "name": "pingweb",
-  "description": "Tool to run a browser and retry a page until a condition is met.",
-  "version": "1.1.1",
+  "description": "Tool to run a browser and try a page for a condition in a loop.",
+  "version": "1.1.2",
   "main": "bin/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -27,5 +27,6 @@
   "bugs": {
     "url": "https://github.com/qwertyuu/nodejs-website-ping/issues"
   },
-  "homepage": "https://github.com/qwertyuu/nodejs-website-ping#readme"
+  "homepage": "https://github.com/qwertyuu/nodejs-website-ping#readme",
+  "keywords": ["ping", "sysadmin", "webping", "webpage", "web", "website", "site"]
 }

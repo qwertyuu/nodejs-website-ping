@@ -1,6 +1,6 @@
 # pingweb
 
-Tool to run a browser and retry a page until a condition is met.
+Tool to run a browser and try a page for a condition in a loop.
 
 ### Examples
 
