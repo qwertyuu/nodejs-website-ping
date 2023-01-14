@@ -89,6 +89,7 @@ class PageGetterStep {
         }
         try {
             context.response = await context.page.goto(context.url, { timeout: context.timeout });
+            context.status = context.response.status();
         } catch (error) {
             return {
                 result: false,
